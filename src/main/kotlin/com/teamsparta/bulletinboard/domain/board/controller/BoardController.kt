@@ -5,9 +5,14 @@ import com.teamsparta.bulletinboard.domain.board.dto.CreateBoardRequest
 import com.teamsparta.bulletinboard.domain.board.dto.UpdateBoardRequest
 import com.teamsparta.bulletinboard.domain.board.service.BoardService
 import com.teamsparta.bulletinboard.domain.exception.ModelNotFoundException
+import com.teamsparta.bulletinboard.domain.security.UserPrincipal
+import com.teamsparta.bulletinboard.domain.user.model.User
+import com.teamsparta.bulletinboard.domain.user.repository.UserRepository
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatusCode
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.ErrorResponse
 import org.springframework.web.bind.annotation.*
 
@@ -32,16 +37,19 @@ class BoardController (
     }
 
     @PostMapping
-    fun createBoard(@RequestBody createBoardRequest: CreateBoardRequest):ResponseEntity<BoardResponse> {
+    fun createBoard(@RequestBody createBoardRequest: CreateBoardRequest, @AuthenticationPrincipal principal: User):ResponseEntity<BoardResponse> {
+        val username = principal.username
+
         return ResponseEntity
             .status(HttpStatus.CREATED)
-            .body(boardService.createBoard(createBoardRequest))
+            .body(boardService.createBoard(createBoardRequest, username))
     }
 
     @PutMapping("/{boardId}")
     fun updateBoard(
         @PathVariable boardId: Long,
-        @RequestBody updateBoardRequest: UpdateBoardRequest
+        @RequestBody updateBoardRequest: UpdateBoardRequest,
+        @AuthenticationPrincipal user: User
         ): ResponseEntity<BoardResponse> {
         return ResponseEntity
             .status(HttpStatus.OK)

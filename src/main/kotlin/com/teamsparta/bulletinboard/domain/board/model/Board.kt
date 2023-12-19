@@ -11,9 +11,11 @@ class Board (
     @Column(name = "title", nullable = false)
     var title: String,
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    var user: User,
+//    @ManyToOne
+//    @JoinColumn(name = "user_id", nullable = false)
+//    var user: User,
+    @Column(name = "username", nullable = false)
+    val username:String,
 
     @Column(name = "description")
     var description: String? = null,
@@ -29,7 +31,7 @@ class Board (
         return BoardResponse(
             id = id!!,
             title = title,
-            username = user.username,
+            username = username,
             description = description,
             date = date
         )
